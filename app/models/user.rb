@@ -61,6 +61,7 @@ class User
     if self.update(password_params)
       self.unset(:code)
       self.unset(:expires_at)
+      true
     end
   end
   

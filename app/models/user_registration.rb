@@ -10,7 +10,7 @@ class UserRegistration
   def send_email_verification(email)
     registrant = Registrant.create(email: email)
     
-    Notifier.registration_email(registrant, @request).deliver
+    Notifier.registration_request(registrant, @request).deliver
     
     REGISTRATION_MESSAGE
   end
