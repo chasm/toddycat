@@ -5,7 +5,7 @@ class Registrant
   
   before_create :set_id
   before_create :set_expiration
-  after_create :clean_up
+  after_create  :clean_up
   
   field :id
   field :email
