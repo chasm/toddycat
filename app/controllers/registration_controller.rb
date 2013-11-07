@@ -1,39 +1,27 @@
 class RegistrationController < ApplicationController
+  before_action :get_registrant
   
   def new
-    @registrant = Registrant.find_by(id: params[:code])
-    
-    if @registrant && @registrant.expires_at > Time.now
-      render :new
-    else
-      redirect_to login_url, error: "Sorry, your code has expired. Please try again."
-    end
+    @user = User.new
   end
   
   def create
-    @registrant = Registrant.find_by(id: params[:code])
-
-    @user = User.new(user_params)
-    @user.email = @registrant.email
+    @user = UserRegistration.new(request).register_new_user(@registrant, params)
     
-    if @user.save
-      @registrant.destroy
-      
+    if @user.valid?
       session[:user_id] = @user.id
       redirect_to root_url, notice: "Thank you for registering!"
     else
-      flash.now[:error] = "Something went wrong. Please check your data and try again."
+      flash.now[:error] = @user.errors
       render :new
     end
   end
   
   private
   
-  def user_params
-    params.require(:user).permit(
-      :name,
-      :password,
-      :password_confirmation
-    )
+  def get_registrant
+    unless @registrant = Registrant.find_by_code(params[:code])
+      redirect_to login_url, error: "Sorry, your code has expired. Please try again."
+    end
   end
 end

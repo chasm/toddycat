@@ -1,6 +1,6 @@
 #registration-form.row
   .col-lg-8.col-lg-offset-2
-    = form_for :user, url: register_url, html: { role: "form" } do |f|
+    = form_for @user, url: register_url, html: { role: "form" } do |f|
       legend Please complete your registration
       .row
         .col-lg-6

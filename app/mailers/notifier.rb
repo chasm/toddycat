@@ -1,4 +1,4 @@
-class UserMailer < ActionMailer::Base
+class Notifier < ActionMailer::Base
   default from: "ToddyCat <admin@toddycat.com>"
   
   def reset_email(user, request)

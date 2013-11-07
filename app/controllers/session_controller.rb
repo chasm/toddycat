@@ -6,40 +6,25 @@ class SessionController < ApplicationController
   end
   
   def create
-    # is the password blank?
-    if params[:user][:password].blank?
-      if @user = User.find_by(email: params[:user][:email])
-        @user.code = SecureRandom.urlsafe_base64
-        @user.expires_at = Time.now + 1.day
-        @user.save
-
-        UserMailer.reset_email(@user, request).deliver
-        
-        flash.now[:notice] = "An email with instructions for " +
-          "reseting your password has been sent to you."
-        render :new
+    email = params[:user][:email]
+    password = params[:user][:password]
+    
+    if password.blank?
+      if user = User.find_by(email: email)
+        flash.now[:notice] = PasswordReset.new(request).send_password_reset(user)
       else
-        @registrant = Registrant.new
-        @registrant.id = SecureRandom.urlsafe_base64
-        @registrant.email = params[:user][:email]
-        @registrant.expires_at = Time.now + 1.day
-        @registrant.save
-        
-        UserMailer.registration_email(@registrant, request).deliver
-        
-        flash.now[:notice] = "An email with instructions for " +
-          "completing your registration has been sent to you."
-        render :new
+        flash.now[:notice] = UserRegistration.new(request).send_email_verification(email)
       end
+      
+      render :new
     else
-      # attempt to authenticate
-      @user = User.find_by(email: params[:user][:email])
-  
-      if @user && @user.authenticate(params[:user][:password])
-        session[:user_id] = @user.id
+      if user = User.authenticate(email, password)
+        session[:user_id] = user.id
+        
         redirect_to root_url
       else
         flash.now[:error] = "Unable to sign you in. Please try again."
+        
         render :new
       end
     end

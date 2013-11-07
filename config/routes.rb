@@ -1,9 +1,14 @@
 ToddyCat::Application.routes.draw do
   
+  scope :api do
+    resources :users, except: [ :new, :edit ], default: { format: :json }
+  end
+  
   # Sign in/out
-  get    'login' => 'session#new', as: :login
-  post   'login' => 'session#create'
+  get    'login'  => 'session#new',     as: :login
+  post   'login'  => 'session#create'
   delete 'logout' => 'session#destroy', as: :logout
+  get    'logout' => 'session#destroy'  # temporary for development
   
   # Registration
   get  'register/:code' => 'registration#new', as: :register
