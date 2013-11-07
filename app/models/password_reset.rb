@@ -10,14 +10,14 @@ class PasswordReset
   def send_password_reset(user)
     user.set_password_reset
 
-    Notifier.password_reset_request(user, @request).deliver
+    Notifier.password_reset_request(user).deliver
     
     RESET_MESSAGE
   end
   
   def reset_password(user, params)
     if user.reset_password(password_params(params))
-      Notifier.password_was_reset(user, @request).deliver
+      Notifier.password_reset(user).deliver
       true
     end
   end

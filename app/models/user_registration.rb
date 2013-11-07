@@ -10,14 +10,17 @@ class UserRegistration
   def send_email_verification(email)
     registrant = Registrant.create(email: email)
     
-    Notifier.registration_request(registrant, @request).deliver
+    Notifier.registration_request(registrant).deliver
     
     REGISTRATION_MESSAGE
   end
   
   def register_new_user(registrant, params)
     user = User.new(registration_params(params, registrant.email))
-    registrant.destroy if user.save
+    if user.save
+      registrant.destroy
+      Notifier.registration(user).deliver
+    end
     user
   end
   

@@ -1,17 +1,27 @@
 class Notifier < ActionMailer::Base
   default from: "ToddyCat <admin@toddycat.com>"
   
-  def password_reset_request(user, request)
+  def password_reset_request(user)
     @user = user
-    @host = request.protocol + request.host_with_port
     
-    mail to: @user.email, subject: "ToddyCat: Reset your credentials"
+    mail to: @user.email, subject: "[ToddyCat] Reset your credentials"
   end
   
-  def registration_request(registrant, request)
-    @registrant = registrant
-    @host = request.protocol + request.host_with_port
+  def password_reset(user)
+    @user = user
     
-    mail to: @registrant.email, subject: "ToddyCat: Complete your registration"
+    mail to: @user.email, subject: "[ToddyCat] Your password was reset"
+  end
+  
+  def registration_request(registrant)
+    @registrant = registrant
+    
+    mail to: @registrant.email, subject: "[ToddyCat] Complete your registration"
+  end
+  
+  def registration(user)
+    @user = user
+    
+    mail to: @user.email, subject: "[ToddyCat] Thank you for registering"
   end
 end

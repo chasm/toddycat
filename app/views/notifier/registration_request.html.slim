@@ -1,7 +1,7 @@
 p Thank you for registering with ToddyCat! To complete your registration, please follow the link below:
 
 p
-  a href="#{@host}/register/#{@registrant.id}" #{@host}/register/#{@registrant.id}
+  = link_to register_url(@registrant.id), register_url(@registrant.id)
 
 p If you received this email in error, simply do nothing. The above link will expire at #{@registrant.expires_at.strftime("%-I:%M on %a, %-d %b %Y")}
 
